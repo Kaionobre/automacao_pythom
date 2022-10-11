@@ -1,0 +1,68 @@
+import pyautogui
+import pyperclip
+import time
+import pandas as pd
+
+pyautogui.PAUSE = 2
+
+#passo 01 _ Entrar no sistema da empresa
+pyautogui.press('win')
+pyautogui.write('chrome')
+pyautogui.press('enter')
+pyautogui.write('https://drive.google.com/drive/folders/149xknr9JvrlEnhNWO49zPcw0PW5icxga')
+pyautogui.press('enter')
+time.sleep(3)
+
+#passo 02 _ Navegar no sistema e encontrar a base de dados
+pyautogui.click(x=500, y=239, clicks=2)
+
+#passo 03 _ Fazer dowload da base de vendas
+pyautogui.click(x=500, y=239, clicks=1)
+pyautogui.click(x=1164, y=171, clicks=1)
+pyautogui.click(x=996, y=575, clicks=1)
+
+#passo 04 _ importar a base de vendas pro python
+tabela = pd.read_excel(r'C:\Users\Kaio\Downloads\Vendas - Dez.xlsx')
+
+#passo 05 _ Calcular os indicadores da empresa
+faturamento = tabela ['Valor Final'].sum()
+print(faturamento)
+quantidade = tabela ['Quantidade'].sum()
+print(quantidade)
+
+
+#passo 06 _ Enviar um e-mail para a diretoria com os indicadores de venda 
+#   Abrir uma aba
+pyautogui.hotkey('ctrl' , 't')
+#   Entrar no link do e-mail - https://mail.google.com/mail/u/0/?hl=pt-BR#inbox
+pyperclip.copy('https://mail.google.com/mail/u/0/?hl=pt-BR#inbox')
+pyautogui.hotkey('ctrl' , 'v')
+pyautogui.press('enter')
+time.sleep(5)
+
+#   Clicar no botão 'escrever'
+pyautogui.click(x=114, y=157, clicks=1)
+#   Preencher as informações do e-mail
+pyautogui.write('kaio.nobrega.com.br@gmail.com')
+pyautogui.press('tab')
+pyautogui.press('tab')
+time.sleep(1)
+pyperclip.copy('Relatório de vendas')
+pyautogui.hotkey('ctrl' , 'v')
+pyautogui.press('tab')
+texto = f'''
+Prezados, boa noite. 
+
+Segue relatório de vendas. 
+Faturamento: R${faturamento:,.2f}
+Quantidade de produtos vendidos: {quantidade:,}
+
+Qualquer dúvida me coloco à disposição.
+Att,.
+
+Kaio Nóbrega
+'''
+pyperclip.copy(texto)
+pyautogui.hotkey('ctrl' , 'v')
+#   Enviar o e-mail
+pyautogui.hotkey('ctrl' , 'enter')
